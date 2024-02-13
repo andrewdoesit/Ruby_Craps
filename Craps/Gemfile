@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "Craps"
+# Specify your gem's dependencies in Craps.gemspec
+gemspec
+
+gem "rake", "~> 13.0"
