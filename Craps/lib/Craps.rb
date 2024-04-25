@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "Craps/version"
+require_relative "dice"
 
 module Craps
   class Game
@@ -45,7 +46,7 @@ module Craps
   end
 
   def roll_dice
-    @dice_total = rand(1..6) + rand(1..6)
+    @dice_total = Dice.new.dice_roll
     puts "You rolled a #{@dice_total}!"
   end
 
