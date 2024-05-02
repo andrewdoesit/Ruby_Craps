@@ -5,13 +5,14 @@ require_relative "dice"
 
 module Craps
   class Game
-    attr_accessor :dice_total, :point, :bet, :bank
+    attr_accessor :dice_total, :point, :bet, :bank, :passDontPass
 
     def initialize
       @dice_total = dice_total
       @point = point
       @bet = bet
       @bank = 100
+      @passDontPass = passDontPass
     end
 
     def welcome_banner
@@ -36,13 +37,20 @@ module Craps
         end
         check_continue
       end
-      puts "Game over. You have $#{@bank}! Out of money!"
     end
 
   def player
-    puts "How much would you like to bet?\n Pass Line Only!\nYou have $#{@bank}"
+    puts "How much would you like to bet?\nYou have $#{@bank}"
+    puts "Enter your bet: Pass Line (1) or Dont Pass Line (2)"
+    @passDontPass = gets.to_i
+    puts "Enter your bet: From your Bank: $#{@bank}"
     @bet = gets.to_i
-    @bank -= @bet
+    if @passDontPass == 1
+      puts "Pass Line Bet"
+      @bank -= @bet
+    elsif @passDontPass == 2
+      @bank -= @bet
+    end
   end
 
   def roll_dice
@@ -50,18 +58,40 @@ module Craps
     puts "You rolled a #{@dice_total}!"
   end
 
+  # Method to handle the logic of a come out roll in the game. 
+  # It checks the @passDontPass value, rolls the dice, and determines the outcome based on the dice total.
+  # Adjusts the @bank balance and displays win/loss messages accordingly.
   def come_out_roll
-    roll_dice
-    case @dice_total
-    when 7, 11
-      @bank += @bet * 2
-      puts "You win! You now have $#{@bank}!"
-    when 2, 3, 12
-      @bet = nil
-      puts "You lose! You now have $#{@bank}!"
-    else
-      @point = @dice_total
-      puts "Your point is #{@point}."
+    if @passDontPass == 1
+      roll_dice
+      case @dice_total
+      when 7, 11
+        @bank += @bet * 2        
+        puts "You win! You now have $#{@bank}!"
+        @bet = nil
+      when 2, 3, 12
+        @bet = nil
+        puts "You lose! You now have $#{@bank}!"
+      else
+        @point = @dice_total
+        puts "Your point is #{@point}."
+      end
+
+    elsif @passDontPass == 2
+        roll_dice
+        case @dice_total
+      when 7, 11
+        @bank -= @bet * 2
+        puts "You lose! You now have $#{@bank}!"
+        @bet = nil
+      when 2, 3, 12
+        @bank += @bet * 2
+        puts "You win! You now have $#{@bank}!"
+        @bet = nil
+      else
+        @point = @dice_total
+        puts "Your point is #{@point}."
+      end 
     end
   end
 
@@ -81,9 +111,16 @@ module Craps
   end
 
   def check_continue
-    puts "Play again? (y/n)"
-    answer = gets.chomp.downcase
-    exit unless answer == "y"
+    # Check if player is out of money and exit if so
+    if @bank <= 0
+      puts "Game over. You have $#{@bank}! Out of money!"
+      exit
+    # Then ask if player wants to continue if money is in the Bank
+    else
+      puts "Play again? (y/n)"
+      answer = gets.chomp.downcase
+      exit unless answer == "y"
+    end
   end
 end
 
