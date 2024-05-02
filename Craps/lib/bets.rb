@@ -15,6 +15,26 @@ module Craps
       @come = 0
     end
 
+    
     def pass_line
-      @pass_line = 1
+      @pass_line = Dice.new.dice_roll
+      puts "You rolled a #{@pass_line} on the pass line!"      
     end
+
+    def dont_pass
+      @dont_pass = Dice.new.dice_roll
+      puts "You rolled a #{@dont_pass} on the dont pass line!"
+    end
+
+    def field
+      @field = Dice.new.dice_roll
+      puts "You rolled a #{@field} on the field!"
+    end
+
+    def come
+      @come = Dice.new.dice_roll
+      puts "You rolled a #{@come} on the come out roll!"
+    end
+
+  end
+end
